@@ -10,6 +10,9 @@
 
 <body>
     <style>
+        .chat {
+            font-size: 15px;
+        }
         .abc-grid {
             display: grid;
             grid-auto-flow: column;
@@ -41,68 +44,107 @@
             margin-top: -50px;
             margin-left: -50px;
             background-color: gray;
-            width: 530px;
-            height: 200px;
+            width: 590px;
+            height: 300px;
 
         }
 
         .chat-input {
             position: absolute;
-            width: 515px;
+            width: 575px;
             bottom: 0%;
         }
 
-        .wheel-info{
+        .wheel-info {
             font-size: 20px !important;
 
+        }
+        .key {
+            position: absolute;
+            right: 0%;
+            top: 0%;
         }
     </style>
 
     <script>
+        var offset = 0
+
+        function OneUp(params) {
+            offset++;
+            offset %= 25
+            document.getElementById("key").innerHTML = document.getElementById("key").innerHTML.substring(0,4) + offset;
+            let x = 1;
+            while (x < 10) {
+                document.getElementById("item" + x).innerHTML = String.fromCharCode((((document.getElementById("item" +
+                    x).innerHTML.charCodeAt(0)) - 65 + 1) % 25) + 65)
+                x++;
+            }
+
+        }
+
+        
+
+        String.prototype.replaceAt = function (index, replacement) {
+            return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+        }
+
+        function send(msg) {
+            let i = 0;
+            msg = msg.toUpperCase()
+            while (i < msg.length){
+                if (msg.charAt(i) != " "){
+                    msg = msg.replaceAt(i,String.fromCharCode((((msg.charCodeAt(i)) - 65 + offset) % 25) + 65))
+                }
+                
+                i++;
+            }
+            return msg
+
+        }
+
         function runScript(e) {
             if (e.keyCode == 13) {
                 var list = document.getElementById('chat');
 
-                var value = document.getElementById('chat-input').value;
+                var value = send(document.getElementById('chat-input').value);
                 var entry = document.createElement('li');
                 entry.appendChild(document.createTextNode(value));
                 list.appendChild(entry);
 
-                document.getElementById('chat-input').value=""
-                
+                document.getElementById('chat-input').value = ""
+
                 return false;
             }
         }
-
-
     </script>
 
 
     <div class="center">
+
         <div class="abc-grid">
             <div class="wheel-info">IN </div>
-            <div>A </div>
-            <div>B </div>
-            <div>C </div>
-            <div>D </div>
-            <div>E </div>
-            <div>F </div>
-            <div>G </div>
-            <div>H </div>
-            <div>I </div>
+            <div>A</div>
+            <div>B</div>
+            <div>C</div>
+            <div>D</div>
+            <div>E</div>
+            <div>F</div>
+            <div>G</div>
+            <div>H</div>
+            <div>I</div>
 
         </div>
         <div class="abc-grid">
             <div class="wheel-info">OUT </div>
-            <div id="item1">A </div>
-            <div id="item2">B </div>
-            <div id="item3">C </div>
-            <div id="item4">D </div>
-            <div id="item5">E </div>
-            <div id="item6">F </div>
-            <div id="item7">G </div>
-            <div id="item8">H </div>
-            <div id="item9">I </div>
+            <div id="item1">A</div>
+            <div id="item2">B</div>
+            <div id="item3">C</div>
+            <div id="item4">D</div>
+            <div id="item5">E</div>
+            <div id="item6">F</div>
+            <div id="item7">G</div>
+            <div id="item8">H</div>
+            <div id="item9">I</div>
 
         </div>
     </div>
@@ -111,6 +153,8 @@
         <ul class="chat" id="chat">
 
         </ul>
+
+        <span class="key" id="key" >KEY: </span>
 
         <input class="chat-input" id="chat-input" type="text" onkeypress="return runScript(event)">
 
