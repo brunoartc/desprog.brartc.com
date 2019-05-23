@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        .chat {
+            font-size: 15px;
+        }
+        .abc-grid {
+            display: grid;
+            grid-auto-flow: column;
+            grid-column-gap: 1ch;
+        }
+
+        .abc-grid>div {
+            background-color: rgba(218, 120, 55, 0.8);
+            text-align: center;
+            width: 50px;
+            height: 50px;
+            font-size: 30px;
+        }
+
+        .center {
+            position: absolute;
+            top: 30%;
+            left: 40%;
+            margin-top: -50px;
+            margin-left: -50px;
+            background-color: blue;
+
+        }
+
+        .center-chat {
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            margin-top: -50px;
+            margin-left: -50px;
+            background-color: gray;
+            width: 590px;
+            height: 300px;
+
+        }
+
+        .chat-input {
+            position: absolute;
+            width: 575px;
+            bottom: 0%;
+        }
+
+        .chat-input-check {
+            position: absolute;
+            bottom: 0%;
+            right: 0%;
+        }
+
+        .wheel-info {
+            font-size: 20px !important;
+
+        }
+        .key {
+            position: absolute;
+            right: 0%;
+            top: 0%;
+        }
+    </style>
+
+    <script>
+        var offset = 0
+
+        var pub = 1;
+
+        var priv = 1;
+
+        var n = 1;
+
+
+        function genRandKey() {
+
+            n = Math.floor(Math.random() * Math.floor(1000));
+            while (n%2!=0){
+                n = Math.floor(Math.random() * Math.floor(1000));
+                console.log(123);
+                
+            }
+            
+            
+                let div = 1;
+            while ( n%div!=0 || div == 1){
+                console.log(456);
+                
+                div = Math.floor(Math.random() * Math.floor(10)) + 1;
+            }
+
+            
+
+            priv = n/div;
+
+            pub = n - (n/div);
+
+            document.getElementById("key").innerHTML = document.getElementById("key").innerHTML.substring(0,9) + pub + ":" + priv;
+            let x = 1;
+            while (x < 10) {
+                document.getElementById("item" + x).innerHTML = (document.getElementById("item_in" + x).innerHTML.charCodeAt(0) + pub ) % n
+                x++;
+            }
+
+            return [n, pub, priv]
+
+            
+        }
+
+        function OneUp(params) {
+            offset++;
+            offset %= 25
+            document.getElementById("key").innerHTML = document.getElementById("key").innerHTML.substring(0,4) + priv;
+            let x = 1;
+            while (x < 10) {
+                document.getElementById("item" + x).innerHTML = (document.getElementById("item_in" + x).innerHTML.charCodeAt(0) + pub ) % n
+                x++;
+            }
+
+        }
+
+        
+
+        String.prototype.replaceAt = function (index, replacement) {
+            return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+        }
+
+        function send(msg) {
+            let i = 0;
+            let aa = []
+            msg = msg.toUpperCase()
+            while (i < msg.length){
+                if (msg.charAt(i) != " "){
+                    aa.push((msg.charCodeAt(i) + pub) % n)
+                    aa.push(" ")
+                    
+                } else {
+                    aa.push("  ")
+                }
+                
+                i++;
+            }
+            return aa.join("")
+
+        }
+
+        function receive(msg) {
+            msg = msg.split(" ")
+            i = 0;
+            console.log(msg);
+
+            aa = []
+            
+            while (i < msg.length){
+                console.log("msg" + msg[i]);
+                console.log(priv);
+                console.log(n);
+                aa.push(String.fromCharCode((Number(msg[i]) + Number(priv) )%n))
+                console.log("RES" + (Number(msg[i]) + Number(priv)));
+                
+                i++;
+            }
+
+            console.log(aa);
+            
+
+            return aa.join("")
+
+
+        }
+
+        function runScript(e) {
+            if (e.keyCode == 13) {
+
+                
+                var list = document.getElementById('chat');
+
+                
+                if (document.getElementById('enc').checked){
+                    var value = send(document.getElementById('chat-input').value);
+                } else {
+                    var value = receive(document.getElementById('chat-input').value);
+                }
+
+                var entry = document.createElement('li');
+                entry.appendChild(document.createTextNode(value));
+                list.appendChild(entry);
+
+                document.getElementById('chat-input').value = ""
+
+                return false;
+            }
+        }
+    </script>
+
+
+    <div class="center">
+        <button onclick="genRandKey()">genKey</button>
+        <div class="abc-grid">
+            <div class="wheel-info">IN </div>
+            <div id="item_in1">H</div>
+            <div id="item_in2">E</div>
+            <div id="item_in3">L</div>
+            <div id="item_in4">L</div>
+            <div id="item_in5">O</div>
+            <div id="item_in6">=</div>
+            <div id="item_in7">)</div>
+            <div id="item_in8">!</div>
+            <div id="item_in9">!</div>
+
+        </div>
+        <div class="abc-grid">
+            <div class="wheel-info">OUT </div>
+            <div id="item1"></div>
+            <div id="item2"></div>
+            <div id="item3"></div>
+            <div id="item4"></div>
+            <div id="item5"></div>
+            <div id="item6"></div>
+            <div id="item7"></div>
+            <div id="item8"></div>
+            <div id="item9"></div>
+
+        </div>
+    </div>
+
+    <div class="center-chat">
+        <ul class="chat" id="chat">
+
+        </ul>
+
+        <span class="key" id="key" >PUB:PRIV  </span>
+
+        <input class="chat-input" id="chat-input" type="text" onkeypress="return runScript(event)">
+
+        <span class="chat-input-check">Encrypt<input id="enc" type="checkbox"></span>
+
+    </div>
+
+</body>
+
+</html>
